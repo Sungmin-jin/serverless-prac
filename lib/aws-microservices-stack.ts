@@ -1,16 +1,23 @@
-import { Stack, StackProps } from 'aws-cdk-lib';
-import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+import { Stack, StackProps } from "aws-cdk-lib";
+import { Construct } from "constructs";
+import EcommerceDatabase from "./db";
+import MicronService from "./ms";
+import ApiGateWay from "./apigateway";
 
 export class AwsMicroservicesStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
+    const db = new EcommerceDatabase(this, "Database");
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'AwsMicroservicesQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
+    const ms = new MicronService(this, "MicroService", {
+      productTable: db.productTable,
+      basketTable: db.basketTable,
+    });
+
+    const apigateway = new ApiGateWay(this, "ApiGateWay", {
+      productService: ms.productService,
+      basketService: ms.basketService,
+    });
   }
 }
