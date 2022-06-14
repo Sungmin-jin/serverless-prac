@@ -3,6 +3,7 @@ import { Construct } from "constructs";
 import EcommerceDatabase from "./db";
 import MicronService from "./ms";
 import ApiGateWay from "./apigateway";
+import EventBus from "./eventbus";
 
 export class AwsMicroservicesStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -13,11 +14,18 @@ export class AwsMicroservicesStack extends Stack {
     const ms = new MicronService(this, "MicroService", {
       productTable: db.productTable,
       basketTable: db.basketTable,
+      orderTable: db.orderTable,
     });
 
     const apigateway = new ApiGateWay(this, "ApiGateWay", {
       productService: ms.productService,
       basketService: ms.basketService,
+      orderService: ms.orderService,
+    });
+
+    const eb = new EventBus(this, "EventBridge", {
+      basketPubliser: ms.basketService,
+      orderingTarget: ms.orderService,
     });
   }
 }

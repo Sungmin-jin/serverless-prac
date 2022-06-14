@@ -10,6 +10,7 @@ import {
 export default class EcommerceDatabase extends Construct {
   public readonly productTable: ITable;
   public readonly basketTable: ITable;
+  public readonly orderTable: ITable;
 
   constructor(scope: Construct, id: string) {
     super(scope, id);
@@ -35,7 +36,22 @@ export default class EcommerceDatabase extends Construct {
       billingMode: BillingMode.PAY_PER_REQUEST,
     });
 
+    const orderTable = new Table(this, "order", {
+      partitionKey: {
+        name: "userName",
+        type: AttributeType.STRING,
+      },
+      sortKey: {
+        name: "orderDate",
+        type: AttributeType.STRING,
+      },
+      tableName: "order",
+      removalPolicy: RemovalPolicy.DESTROY,
+      billingMode: BillingMode.PAY_PER_REQUEST,
+    });
+
     this.productTable = productTable;
     this.basketTable = basketTable;
+    this.orderTable = orderTable;
   }
 }
