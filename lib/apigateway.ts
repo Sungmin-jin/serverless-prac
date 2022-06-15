@@ -64,6 +64,5 @@ export default class ApiGateWay extends Construct {
     order.addMethod("GET");
     const singleOrder = order.addResource("{userName}");
     singleOrder.addMethod("GET");
-    return singleOrder;
   }
 }

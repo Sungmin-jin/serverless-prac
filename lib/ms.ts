@@ -56,6 +56,9 @@ export default class MicroService extends Construct {
       environment: {
         PRIMARY_KEY: "userName",
         DYNAMODB_TABLE_NAME: basketTable.tableName,
+        EVENT_SOURCE: "com.basket.checkoutbasket",
+        EVENT_DETAIL_TYPE: "CheckoutBasket",
+        EVENT_BUS_NAME: "EventBus",
       },
       runtime: Runtime.NODEJS_14_X,
     };
@@ -82,7 +85,7 @@ export default class MicroService extends Construct {
       runtime: Runtime.NODEJS_14_X,
     };
 
-    const orderService = new NodejsFunction(this, "orderLambaFunction", {
+    const orderService = new NodejsFunction(this, "orderLambdaFunction", {
       entry: join(__dirname, "../src/order/index.js"),
       ...nodejsFunctionProps,
     });

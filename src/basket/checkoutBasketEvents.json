@@ -1,0 +1,16 @@
+[
+  {
+    "Source": "com.basket.checkoutbasket",
+    "Detail": "{\"username\": \"sungmin\", \"basket\": \"iphone\"}",
+    "Resources": ["resource1", "resource2"],
+    "DetailType": "CheckoutBasket",
+    "EventBusName": "EventBus"
+  },
+  {
+    "Source": "com.basket.checkoutbasket",
+    "Detail": "{\"username\": \"sungmin\", \"basket\": \"iphone2\"}",
+    "Resources": ["resource1", "resource2"],
+    "DetailType": "CheckoutBasket",
+    "EventBusName": "EventBus"
+  }
+]
