@@ -1,11 +1,12 @@
 import { Construct } from "constructs";
 import { EventBus, Rule } from "aws-cdk-lib/aws-events";
-import { LambdaFunction } from "aws-cdk-lib/aws-events-targets";
+import { LambdaFunction, SqsQueue } from "aws-cdk-lib/aws-events-targets";
 import { IFunction } from "aws-cdk-lib/aws-lambda";
+import { IQueue } from "aws-cdk-lib/aws-sqs";
 
 type EventBusProps = {
-  basketPubliser: IFunction;
-  orderingTarget: IFunction;
+  basketService: IFunction;
+  orderQueue: IQueue;
 };
 
 export default class EcommerceEventBus extends Construct {
@@ -13,13 +14,13 @@ export default class EcommerceEventBus extends Construct {
     super(scope, id);
 
     this.basketCheckoutEventBridge({
-      target: props.orderingTarget,
-      publisher: props.basketPubliser,
+      target: props.orderQueue,
+      publisher: props.basketService,
     });
   }
 
   basketCheckoutEventBridge(basketProps: {
-    target: IFunction;
+    target: IQueue;
     publisher: IFunction;
   }) {
     const bus = new EventBus(this, "EventBus", {
@@ -37,8 +38,7 @@ export default class EcommerceEventBus extends Construct {
       ruleName: "CheckoutBasketRule",
     });
 
-    checkoutBasketRule.addTarget(new LambdaFunction(basketProps.target));
-
+    checkoutBasketRule.addTarget(new SqsQueue(basketProps.target));
     bus.grantPutEventsTo(basketProps.publisher);
   }
 }

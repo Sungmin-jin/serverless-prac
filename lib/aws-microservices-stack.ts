@@ -1,9 +1,10 @@
-import { Stack, StackProps } from "aws-cdk-lib";
+import { Duration, Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import EcommerceDatabase from "./db";
 import MicronService from "./ms";
 import ApiGateWay from "./apigateway";
 import EventBus from "./eventbus";
+import Queue from "./queue";
 
 export class AwsMicroservicesStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -23,9 +24,13 @@ export class AwsMicroservicesStack extends Stack {
       orderService: ms.orderService,
     });
 
+    const queue = new Queue(this, "Queue", {
+      orderConsumer: ms.orderService,
+    });
+
     const eb = new EventBus(this, "EventBridge", {
-      basketPubliser: ms.basketService,
-      orderingTarget: ms.orderService,
+      basketService: ms.basketService,
+      orderQueue: queue.orderQueue,
     });
   }
 }
